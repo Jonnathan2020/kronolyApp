@@ -1,64 +1,76 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import styles from "./style";
-
-const PRODUTOS = [
-  {
-    id: "1",
-    nome: "Shampoo Profissional",
-    descricao: "Limpeza profunda para todos os tipos de cabelo.",
-    //imagem: require("../../assets/produto1.png"),
-    preco: "R$ 35,00",
-  },
-  {
-    id: "2",
-    nome: "Condicionador Nutritivo",
-    descricao: "Hidratação intensa e brilho natural.",
-    //imagem: require("../../assets/produto2.png"),
-    preco: "R$ 42,00",
-  },
-  {
-    id: "3",
-    nome: "Condicionador Nutritivo",
-    descricao: "Hidratação intensa e brilho natural.",
-    //imagem: require("../../assets/produto2.png"),
-    preco: "R$ 42,00",
-  },
-  {
-    id: "4",
-    nome: "Condicionador Nutritivo",
-    descricao: "Hidratação intensa e brilho natural.",
-    //imagem: require("../../assets/produto2.png"),
-    preco: "R$ 42,00",
-  },
-];
+import api from "../../api/api"; // ajuste o caminho se necessário
+import "../../../assets/servicos/corte_taper_fade.png"
 
 export default function Produtos({ navigation }) {
+  const [produtos, setProdutos] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const buscarProdutos = async () => {
+    try {
+      setLoading(true);
+
+      const response = await api.get("/produtos");
+
+      const dados = response.data.map((s) => ({
+        id: String(s.idProduto),
+        descricao: s.descricao,
+        valorCusto: s.valorCusto,
+        valorProduto: `R$ ${Number(s.valorVenda)
+          .toFixed(2)
+          .replace(".", ",")}`,
+      }));
+
+      setProdutos(dados);
+    } catch (error) {
+      console.log("❌ ERRO AO BUSCAR PRODUTOS:", error.message);
+      setProdutos([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    buscarProdutos();
+  }, []);
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Image source={item.imagem} style={styles.image} />
+      <Image
+        style={styles.image}
+        source={require("../../../assets/servicos/corte_taper_fade.png")}
+      />
+      {/* FAIXA INFERIOR SOBRE A IMAGEM */}
+      <View style={styles.footerOverlay}>
+        {/* ESQUERDA */}
+        <View>
+          <Text style={styles.nomeProduto}>
+            {item.descricao}
+          </Text>
 
-      <View style={styles.labelContainer}>
-        <Text style={styles.labelText}>{item.nome}</Text>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.price}>{item.preco}</Text>
-        <Text style={styles.description}>{item.descricao}</Text>
+          {/* DIREITA */}
+          <Text style={styles.precoTexto}>
+            {item.valorProduto}
+          </Text>
+        </View>
       </View>
     </View>
+      
   );
 
   return (
     <View style={styles.container}>
 
       <FlatList
-        data={PRODUTOS}
+        data={produtos}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={{ padding: 16, paddingBottom: 90 }}
+        refreshing={loading}
+        onRefresh={buscarProdutos}
+        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       />
 
@@ -66,6 +78,7 @@ export default function Produtos({ navigation }) {
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate("AdicionarProduto")}
+        activeOpacity={0.8}
       >
         <AntDesign name="plus" size={22} color="#FFF" />
         <Text style={styles.addButtonText}>Adicionar Produto</Text>

@@ -25,14 +25,13 @@ export default function AgendamentoNovo({ navigation }) {
 
       <TouchableOpacity
         style={styles.botao}
-        onPress={() =>
+        onPress={() => {
+          console.log("📤 ENVIANDO DATA:", selectedDate);
+        
           navigation.navigate("AgendamentoHorario", {
-            screen: "AgendamentoHorario",
-            params: {
-              data: selectedDate,
-            },
-          })
-        }
+            data: selectedDate,
+          });
+        }}
       >
         <Text style={styles.textoBotao}>Próximo</Text>
       </TouchableOpacity>

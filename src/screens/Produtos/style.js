@@ -7,11 +7,11 @@ export default StyleSheet.create({
   },
 
   card: {
-    marginBottom: 24,
+    marginBottom: 1,
   },
 
   image: {
-    height: 200,
+    height: 300,
     width: "100%",
     borderRadius: 8,
     backgroundColor: "#FF6B6B",
@@ -41,13 +41,14 @@ export default StyleSheet.create({
 
   description: {
     color: "#444",
-    fontSize: 13,
+    fontSize: 14,
     marginBottom: 6,
+    textAlign: "left",
   },
 
-  price: {
-    color: "#8B2C2C",
-    fontSize: 14,
+  valorProduto: {
+    color: "#FF6B6B",
+    fontSize: 16,
     fontWeight: "bold",
     textAlign: "right",
   },
@@ -55,14 +56,14 @@ export default StyleSheet.create({
   /* BOTÃO */
   addButton: {
     position: "absolute",
-    bottom: 20,
+    bottom: 50,
     left: 20,
     right: 20,
-    backgroundColor: "#FF6B6B",
+    backgroundColor: "#eb6363",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 14,
+    paddingVertical: 20,
     borderRadius: 30,
     elevation: 5,
   },
@@ -72,5 +73,36 @@ export default StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 8,
     fontSize: 15,
+  },
+  card: {
+    marginBottom: 24,
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  
+  /* FAIXA INFERIOR */
+  footerOverlay: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#d15858",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  
+  nomeProduto: {
+    color: "#FFF",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  
+  precoTexto: {
+    color: "#FFF",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });

@@ -11,15 +11,24 @@ import styles from "./style";
 import api from "../../api/api";
 
 export default function AgendamentoDados({ navigation, route }) {
-  const { data, horario } = route.params;
+  const { data, hora, horarioId } = route.params;
+  
+  console.log("📦 PARAMS RECEBIDOS:", route.params);
+  console.log("📅 DATA:", data);
+  console.log("⏰ HORÁRIO:", hora);
+  console.log("⏰ IDHORARIO: ", horarioId)
+
 
   const [nome, setNome] = useState("");
-  const [contato, setContato] = useState("");
+  const [contatoCliente, setContatoCliente] = useState("");
   const [obs, setObs] = useState("");
 
   const [servicos, setServicos] = useState([]);
+  const [produtos, setProdutos] = useState([]);
+  const [produtosSelecionados, setProdutosSelecionados] = useState([]);
   const [servicosSelecionados, setServicosSelecionados] = useState([]);
   const [mostrarServicos, setMostrarServicos] = useState(false);
+  const [mostrarProdutos, setMostrarProdutos] = useState(false);
 
   /* 🔹 BUSCAR SERVIÇOS */
   useEffect(() => {
@@ -28,6 +37,16 @@ export default function AgendamentoDados({ navigation, route }) {
       .then((res) => setServicos(res.data))
       .catch((err) =>
         console.log("❌ ERRO AO BUSCAR SERVIÇOS:", err.message)
+      );
+  }, []);
+
+  /* 🔹 BUSCAR PRODUTOS */
+  useEffect(() => {
+    api
+      .get("/produtos")
+      .then((res) => setProdutos(res.data))
+      .catch((err) =>
+        console.log("❌ ERRO AO BUSCAR PRODUTOS:", err.message)
       );
   }, []);
 
@@ -41,6 +60,19 @@ export default function AgendamentoDados({ navigation, route }) {
       }
 
       return [...prev, servico];
+    });
+  };
+
+  /* 🔹 ADICIONAR / REMOVER PRODUTO */
+  const toggleProduto = (produto) => {
+    setProdutosSelecionados((prev) => {
+      const existe = prev.some((s) => s.idProduto === produto.idProduto);
+
+      if (existe) {
+        return prev.filter((s) => s.idProduto !== produto.idProduto);
+      }
+
+      return [...prev, produto];
     });
   };
 
@@ -65,6 +97,27 @@ export default function AgendamentoDados({ navigation, route }) {
     );
   };
 
+  const renderProduto = ({ item }) => {
+    const selecionado = produtosSelecionados.some(
+      (s) => s.idProduto === item.idProduto
+    );
+
+    return (
+      <TouchableOpacity
+        style={[styles.itemServico, selecionado && styles.itemSelecionado]}
+        onPress={() => toggleProduto(item)}
+        activeOpacity={0.8}
+      >
+        <View style={styles.infoServico}>
+          <Text style={styles.nomeServico}>{item.descricao}</Text>
+          <Text style={styles.detalheServico}>
+            R$ {item.valorVenda}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 20 }}>
       <Text style={styles.titulo}>Informe os dados</Text>
@@ -80,8 +133,8 @@ export default function AgendamentoDados({ navigation, route }) {
         style={styles.input}
         placeholder="Contato"
         keyboardType="numeric"
-        value={contato}
-        onChangeText={setContato}
+        value={contatoCliente}
+        onChangeText={setContatoCliente}
       />
 
       {/* TOGGLE SERVIÇOS */}
@@ -104,6 +157,28 @@ export default function AgendamentoDados({ navigation, route }) {
           style={styles.listSelecionar}
         />
       )}
+
+      {/* TOGGLE PRODUTOS */}
+      <TouchableOpacity
+        style={styles.toggleServico}
+        onPress={() => setMostrarProdutos(!mostrarProdutos)}
+      >
+        <Text style={styles.subTitulo}>
+          {mostrarProdutos ? "Concluir seleção ▲" : "Selecionar produtos ▼"}
+        </Text>
+      </TouchableOpacity>
+
+      {/* LISTA DE PRODUTOS */}
+      {mostrarProdutos && (
+        <FlatList
+          data={produtos}
+          keyExtractor={(item) => item.idProduto.toString()}
+          renderItem={renderProduto}
+          scrollEnabled={false} // FlatList dentro do ScrollView
+          style={styles.listSelecionar}
+        />
+      )}
+      
 
       {/* RESUMO DOS SERVIÇOS */}
       {servicosSelecionados.length > 0 && !mostrarServicos && (
@@ -129,6 +204,31 @@ export default function AgendamentoDados({ navigation, route }) {
         </View>
       )}
 
+      {/* RESUMO DOS PRODUTOS */}
+      {produtosSelecionados.length > 0 && !mostrarProdutos && (
+        <View style={styles.resumoContainer}>
+          <Text style={styles.subTitulo1}>Produtos selecionados</Text>
+
+          {produtosSelecionados.map((s) => (
+            <View key={s.idProduto} style={styles.resumoItem}>
+              {/* Ícone de check */}
+              <View style={styles.checkIcon}>
+                <Text style={styles.checkText}>✓</Text>
+              </View>
+
+              {/* Informações do serviço */}
+              <View style={styles.resumoInfo}>
+                <Text style={styles.nomeServico}>{s.descricao}</Text>
+                <Text style={styles.detalheServico}>
+                  • R$ {s.valorVenda}
+                </Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
+
       {/* OBSERVAÇÕES */}
       <TextInput
         style={[styles.input, styles.inputMultiline]}
@@ -145,10 +245,11 @@ export default function AgendamentoDados({ navigation, route }) {
         onPress={() =>
           navigation.navigate("AgendamentoConfirmacao", {
             data,
-            horario,
+            hora,
             nome,
-            contato,
+            contatoCliente,
             servicos: servicosSelecionados,
+            produtos: produtosSelecionados,
             obs,
           })
         }
@@ -157,4 +258,5 @@ export default function AgendamentoDados({ navigation, route }) {
       </TouchableOpacity>
     </ScrollView>
   );
+  
 }

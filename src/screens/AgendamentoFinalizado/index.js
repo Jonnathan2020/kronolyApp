@@ -20,14 +20,26 @@ export default function AgendamentoFinalizado({ navigation }) {
 
   return (
     <View style={styles.sucessoContainer}>
-      <Text style={styles.sucessoTexto}>Agendamento realizado!</Text>
-
-      <TouchableOpacity
-        style={styles.botaoSecundario}
-        onPress={irParaAgenda}
-      >
-        <Text style={styles.textoBotao}>Acessar a Agenda</Text>
-      </TouchableOpacity>
+      <View style={styles.popup}>
+        {/* ÍCONE */}
+        <View style={styles.iconeSucesso}>
+          <Text style={styles.iconeTexto}>✓</Text>
+        </View>
+  
+        <Text style={styles.textoSucesso}>Agendamento realizado!</Text>
+        <Text style={styles.subtitulo}>
+          Seu horário foi confirmado com sucesso.
+        </Text>
+  
+        <TouchableOpacity
+          style={styles.botaoSecundario}
+          onPress={irParaAgenda}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.textoBotao}>Acessar a Agenda</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
+  
 }

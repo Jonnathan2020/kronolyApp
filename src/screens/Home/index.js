@@ -26,6 +26,12 @@ const DATA = [
     titulo: "Produtos",
     //imagem: require("../../assets/produtos.png"),
     descricao: "12 produtos ativos"
+  },
+  {
+    id: "5",
+    titulo: "Agenda",
+    //imagem: require("../../assets/agendamentos.png"),
+    descricao: "Criar Agenda"
   }
 ];
 

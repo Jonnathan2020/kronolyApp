@@ -4,14 +4,15 @@ import { Calendar } from "react-native-calendars";
 import api from "../../api/api.js";
 import styles from "./style";
 
-console.log("API IMPORTADA É:", api);
-console.log("TIPO:", typeof api);
-console.log("TEM GET?", api?.get);
+/* ===================== DATA ATUAL ===================== */
+const hojeISO = () => {
+  const hoje = new Date();
+  return hoje.toISOString().split("T")[0]; // yyyy-mm-dd
+};
 
 /* ===================== COMPONENT ===================== */
 export default function Agenda() {
-
-  const [selectedDate, setSelectedDate] = useState("2025-12-22");
+  const [selectedDate, setSelectedDate] = useState(hojeISO());
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [items, setItems] = useState({});
 
@@ -26,6 +27,7 @@ export default function Agenda() {
 
   /* ===================== UTIL ===================== */
   const formatarDataTitulo = (dateString) => {
+    if (!dateString) return "";
     const [ano, mes, dia] = dateString.split("-");
     const data = new Date(ano, mes - 1, dia);
     return data.toLocaleDateString("pt-BR", {
@@ -39,10 +41,11 @@ export default function Agenda() {
 
   /* ===================== BACKEND ===================== */
   const buscarAgendamentos = async (data) => {
+    if (!data) return;
+
     console.log("📅 DATA ENVIADA:", data);
 
     try {
-      console.log("API:", api);
       const response = await api.get(`/agendamento/data/${data}`);
       const organizado = {};
 
@@ -69,6 +72,7 @@ export default function Agenda() {
     }
   };
 
+  /* ===================== EFFECT ===================== */
   useEffect(() => {
     buscarAgendamentos(selectedDate);
   }, [selectedDate]);
@@ -80,8 +84,10 @@ export default function Agenda() {
     return (
       <View style={styles.linhaHorario}>
         <Text style={styles.hora}>{item}</Text>
+
         <View style={styles.conteudo}>
           <View style={styles.linha} />
+
           {agendamentos?.map((ag) => (
             <View key={ag.id} style={styles.card}>
               <Text style={styles.cardTitulo}>
@@ -108,28 +114,25 @@ export default function Agenda() {
         {formatarDataTitulo(selectedDate)}
       </Text>
 
-
       {calendarOpen && (
-      <Calendar
-        onDayPress={(day) => {
-          setSelectedDate(day.dateString);
-          setCalendarOpen(false); // 🔥 FECHA AQUI
-        }}
-        markedDates={{
-          [selectedDate]: {
-            selected: true,
-            selectedColor: "#6A5ACD",
-          },
-        }}
-        theme={{
-          todayTextColor: "#6A5ACD",
-          arrowColor: "#000",
-        }}
-
-        style={styles.calendarioCompacto}
-      />
-    )}
-
+        <Calendar
+          onDayPress={(day) => {
+            setSelectedDate(day.dateString);
+            setCalendarOpen(false);
+          }}
+          markedDates={{
+            [selectedDate]: {
+              selected: true,
+              selectedColor: "#6A5ACD",
+            },
+          }}
+          theme={{
+            todayTextColor: "#6A5ACD",
+            arrowColor: "#000",
+          }}
+          style={styles.calendarioCompacto}
+        />
+      )}
 
       <FlatList
         data={HORARIOS}
