@@ -77,7 +77,7 @@ export default function Produtos({ navigation }) {
       {/* BOTÃO ADICIONAR */}
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => navigation.navigate("AdicionarProduto")}
+        onPress={() => navigation.navigate("ProdutoAdicionar")}
         activeOpacity={0.8}
       >
         <AntDesign name="plus" size={22} color="#FFF" />

@@ -83,7 +83,7 @@ export default function Servicos({ navigation }) {
       {/* BOTÃO ADICIONAR SERVIÇO */}
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => navigation.navigate("AdicionarServico")}
+        onPress={() => navigation.navigate("ServicoAdicionar")}
         activeOpacity={0.8}
       >
         <AntDesign name="plus" size={22} color="#FFF" />

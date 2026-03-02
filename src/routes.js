@@ -3,9 +3,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Home from "./screens/Home";
 import Agenda from "./screens/Agenda";
-import Produtos from "./screens/Produtos";
-import Servicos from "./screens/Servicos";
 import StackAgendamento from "./navigations/StackAgendamento";
+import StackServico from "./navigations/StackServico";
+import StackProduto from "./navigations/StackProduto";
 import {Entypo} from "@expo/vector-icons"
 import ButtomNew from "./components/ButtomNew";
 
@@ -51,7 +51,7 @@ export default function Routes(){
              }}
             />        
 
-            <Tab.Screen name="Produtos" component={Produtos}
+            <Tab.Screen name="Produtos" component={StackProduto}
                options={{
                 tabBarIcon: ({size, color})=>(
                    <Entypo name="shopping-cart" size={size} color={color} />
@@ -59,7 +59,7 @@ export default function Routes(){
              }}
             />
 
-            <Tab.Screen name="Serviços" component={Servicos}
+            <Tab.Screen name="Serviços" component={StackServico}
                options={{
                 tabBarIcon: ({size, color})=>(
                    <Entypo name="shop" size={size} color={color} />
