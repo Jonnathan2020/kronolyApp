@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, FlatList, Image, TouchableOpacity, Alert } from "react-native";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import styles from "./style";
-import api from "../../api/api"; // ajuste o caminho se necessário
-import "../../../assets/servicos/corte_taper_fade.png"
+import api from "../../api/api";
 
 export default function Servicos({ navigation }) {
 
@@ -18,9 +18,11 @@ export default function Servicos({ navigation }) {
 
       const dados = response.data.map((s) => ({
         id: String(s.idServico),
+        idServico: s.idServico,
         descricao: s.descricao,
         tempoEstimado: s.tempoEstimado,
-        valorServico: `R$ ${Number(s.valorServico)
+        valorServico: s.valorServico,
+        valorFormatado: `R$ ${Number(s.valorServico)
           .toFixed(2)
           .replace(".", ",")}`,
       }));
@@ -34,39 +36,93 @@ export default function Servicos({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    buscarServicos();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      buscarServicos();
+    }, [])
+  );
+
+  const removerServico = (id) => {
+    Alert.alert(
+      "Remover Serviço",
+      "Deseja realmente excluir este serviço?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await api.delete(`/servicos/${id}`);
+
+              setServicos((prev) =>
+                prev.filter((s) => s.idServico !== id)
+              );
+            } catch (error) {
+              console.log("Erro ao excluir serviço:", error);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
+
       {/* IMAGEM */}
       <Image
         style={styles.image}
         source={require("../../../assets/servicos/corte_taper_fade.png")}
       />
-  
-      {/* FAIXA INFERIOR SOBRE A IMAGEM */}
+
+      {/* FAIXA INFERIOR */}
       <View style={styles.footerOverlay}>
+
         {/* ESQUERDA */}
         <View>
           <Text style={styles.nomeServico}>
             {item.descricao}
           </Text>
+
           <Text style={styles.tempoTexto}>
             {item.tempoEstimado} min
           </Text>
         </View>
-  
+
         {/* DIREITA */}
-        <Text style={styles.precoTexto}>
-          {item.valorServico}
-        </Text>
+        <View style={{ alignItems: "flex-end" }}>
+          <Text style={styles.precoTexto}>
+            {item.valorFormatado}
+          </Text>
+
+          <View style={{ flexDirection: "row", marginTop: 6 }}>
+
+            {/* EDITAR */}
+            <TouchableOpacity
+              style={styles.iconButtonEdit}
+              onPress={() =>
+                navigation.navigate("ServicoEditar", { servico: item })
+              }
+            >
+              <Feather name="edit" size={20} color="#FFF" />
+            </TouchableOpacity>
+
+            {/* EXCLUIR */}
+            <TouchableOpacity
+              style={styles.iconButtonDelete}
+              onPress={() => removerServico(item.idServico)}
+            >
+              <AntDesign name="delete" size={20} color="#FFF" />
+            </TouchableOpacity>
+
+          </View>
+        </View>
+
       </View>
     </View>
   );
-  
-  
+
   return (
     <View style={styles.container}>
 
@@ -80,7 +136,7 @@ export default function Servicos({ navigation }) {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* BOTÃO ADICIONAR SERVIÇO */}
+      {/* BOTÃO ADICIONAR */}
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate("ServicoAdicionar")}

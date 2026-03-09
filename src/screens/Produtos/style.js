@@ -105,4 +105,20 @@ export default StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  precoLinha: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginTop: 4,
+    
+  },
+  iconButtonEdit: {
+    marginLeft: 130,
+  },
+  iconButtonDelete: {
+    marginLeft: 30,
+  },
+  
+  
+
 });

@@ -112,4 +112,11 @@ export default StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  iconButtonEdit: {
+    marginLeft: 0,
+  },
+  iconButtonDelete: {
+    marginLeft: 40,
+    marginRight: 20
+  },
 });

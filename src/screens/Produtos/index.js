@@ -1,9 +1,8 @@
-import React,{useState, useEffect} from "react";
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
+import { View, Text, FlatList, Image, TouchableOpacity, Alert } from "react-native";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import styles from "./style";
-import api from "../../api/api"; // ajuste o caminho se necessário
-import "../../../assets/servicos/corte_taper_fade.png"
+import api from "../../api/api";
 
 export default function Produtos({ navigation }) {
   const [produtos, setProdutos] = useState([]);
@@ -17,12 +16,16 @@ export default function Produtos({ navigation }) {
 
       const dados = response.data.map((s) => ({
         id: String(s.idProduto),
+        idProduto: s.idProduto,
         descricao: s.descricao,
+        quantProduto: s.quantProduto,
         valorCusto: s.valorCusto,
+        valorVenda: s.valorVenda, // 👈 IMPORTANTE
         valorProduto: `R$ ${Number(s.valorVenda)
           .toFixed(2)
           .replace(".", ",")}`,
       }));
+      
 
       setProdutos(dados);
     } catch (error) {
@@ -37,33 +40,77 @@ export default function Produtos({ navigation }) {
     buscarProdutos();
   }, []);
 
+  const removerProduto = (id) => {
+    Alert.alert(
+      "Remover Produto",
+      "Deseja realmente remover este produto?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Remover",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await api.delete(`/produtos/${id}`);
+
+              setProdutos((prev) => prev.filter((p) => p.id !== id));
+
+              console.log("Produto removido com sucesso");
+            } catch (error) {
+              console.log("Erro ao remover produto:", error);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <Image
         style={styles.image}
         source={require("../../../assets/servicos/corte_taper_fade.png")}
       />
-      {/* FAIXA INFERIOR SOBRE A IMAGEM */}
+
+      {/* FAIXA INFERIOR */}
       <View style={styles.footerOverlay}>
-        {/* ESQUERDA */}
-        <View>
+        <View style={{ flex: 1 }}>
           <Text style={styles.nomeProduto}>
             {item.descricao}
           </Text>
 
-          {/* DIREITA */}
-          <Text style={styles.precoTexto}>
-            {item.valorProduto}
-          </Text>
+          {/* LINHA PREÇO + ÍCONES */}
+          <View style={styles.precoLinha}>
+            <Text style={styles.precoTexto}>
+              {item.valorProduto}
+            </Text>
+
+            <TouchableOpacity
+              style={styles.iconButtonEdit}
+              onPress={() =>
+                navigation.navigate("ProdutoEditar", { produto: item })
+              }
+            >
+              <Feather name="edit" size={20} color="#FFF" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.iconButtonDelete}
+              onPress={() => removerProduto(item.id)}
+            >
+              <AntDesign name="delete" size={20} color="#FFF" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>
-      
   );
 
   return (
     <View style={styles.container}>
-
       <FlatList
         data={produtos}
         keyExtractor={(item) => item.id}
@@ -83,7 +130,6 @@ export default function Produtos({ navigation }) {
         <AntDesign name="plus" size={22} color="#FFF" />
         <Text style={styles.addButtonText}>Adicionar Produto</Text>
       </TouchableOpacity>
-
     </View>
   );
 }
