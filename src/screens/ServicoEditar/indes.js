@@ -17,7 +17,6 @@ export default function ServicoEditar({route, navigation }) {
   const [tempoEstimado, setTempoEstimado] = useState("");
   const [valorCusto, setValorCusto] = useState("");
   const [valorServico, setValorServico] = useState("");
-  const [quantServicos, setQuantServicos] = useState("");
 
   useEffect(() => {
     if (servico) {
@@ -25,7 +24,6 @@ export default function ServicoEditar({route, navigation }) {
       setTempoEstimado(String(servico.tempoEstimado || ""));
       setValorCusto(String(servico.valorCusto || ""));
       setValorServico(String(servico.valorServico || ""));
-      setQuantServicos(String(servico.quantServicos || ""));
     }
   }, []);
 
@@ -37,7 +35,6 @@ export default function ServicoEditar({route, navigation }) {
         tempoEstimado: Number(tempoEstimado),
         valorCusto: Number(valorCusto),
         valorServico: Number(valorServico),
-        quantServicos: Number(quantServicos),
       };
 
       console.log("📤 ATUALIZANDO SERVIÇO:", payload);
@@ -95,14 +92,6 @@ export default function ServicoEditar({route, navigation }) {
         keyboardType="numeric"
         value={valorServico}
         onChangeText={setValorServico}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Quantidade de Serviços"
-        keyboardType="numeric"
-        value={quantServicos}
-        onChangeText={setQuantServicos}
       />
 
       <TouchableOpacity style={styles.botao} onPress={atualizarServico}>

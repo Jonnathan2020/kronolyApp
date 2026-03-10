@@ -1,74 +1,95 @@
 import React from "react";
-import { View, Text, FlatList, Image } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import styles from "./style";
 
-const DATA = [
-  {
-    id: "1",
-    titulo: "Agendamentos",
-    //imagem: require("../../assets/agendamentos.png"),
-    descricao: "3 agendamentos para hoje"
-  },
-  {
-    id: "2",
-    titulo: "Horários",
-    //imagem: require("../../assets/horarios.png"),
-    descricao: "5 horários disponíveis"
-  },
-  {
-    id: "3",
-    titulo: "Serviços",
-    //imagem: require("../../assets/servicos.png"),
-    descricao: "8 serviços cadastrados"
-  },
-  {
-    id: "4",
-    titulo: "Produtos",
-    //imagem: require("../../assets/produtos.png"),
-    descricao: "12 produtos ativos"
-  },
-  {
-    id: "5",
-    titulo: "Agenda",
-    //imagem: require("../../assets/agendamentos.png"),
-    descricao: "Criar Agenda"
-  }
-];
+export default function Home({ navigation }) {
 
-export default function Home() {
+  const menus = [
+    {
+      id: "1",
+      titulo: "Empresa",
+      icon: "business",
+      tipo: "MaterialIcons",
+      tela: "Empresa"
+    },
+    {
+      id: "2",
+      titulo: "Dashboard",
+      icon: "chart-line",
+      tipo: "FontAwesome5",
+      tela: "Dashboard"
+    },
+    {
+      id: "3",
+      titulo: "Financeiro",
+      icon: "cash-outline",
+      tipo: "Ionicons",
+      tela: "Financeiro"
+    },
+    {
+      id: "4",
+      titulo: "Agenda Config",
+      icon: "calendar-outline",
+      tipo: "Ionicons",
+      tela: "AgendaConfig"
+    },
+    {
+      id: "5",
+      titulo: "Configurações",
+      icon: "settings-outline",
+      tipo: "Ionicons",
+      tela: "Configuracoes"
+    }
+  ];
+
+  const renderIcon = (item) => {
+
+    if (item.tipo === "MaterialIcons")
+      return <MaterialIcons name={item.icon} size={32} color="#eb6363" />;
+
+    if (item.tipo === "FontAwesome5")
+      return <FontAwesome5 name={item.icon} size={28} color="#eb6363" />;
+
+    if (item.tipo === "Ionicons")
+      return <Ionicons name={item.icon} size={32} color="#eb6363" />;
+  };
 
   const renderItem = ({ item }) => (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={0.85}
+      onPress={() => navigation.navigate(item.tela)}
+    >
 
-      {/* IMAGEM ILUSTRATIVA */}
-      <Image
-        source={item.imagem}
-        style={styles.image}
-        resizeMode="cover"
-      />
-
-      {/* TÍTULO */}
-      <View style={styles.labelContainer}>
-        <Text style={styles.labelText}>{item.titulo}</Text>
+      <View style={styles.iconContainer}>
+        {renderIcon(item)}
       </View>
 
-      {/* DESCRIÇÃO / RESUMO */}
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>{item.descricao}</Text>
-      </View>
+      <Text style={styles.cardTitulo}>
+        {item.titulo}
+      </Text>
 
-    </View>
+    </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
+
+      <Text style={styles.titulo}>
+        Kronoly APP
+      </Text>
+
       <FlatList
-        data={DATA}
+        data={menus}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={{ padding: 16 }}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
+        contentContainerStyle={{ padding: 20 }}
         showsVerticalScrollIndicator={false}
       />
+
     </View>
   );
 }

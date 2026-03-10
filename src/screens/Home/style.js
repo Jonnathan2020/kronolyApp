@@ -1,49 +1,45 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
+
   container: {
     flex: 1,
-    backgroundColor: "#DDD",
+    backgroundColor: "#f5f6fa"
+  },
+
+  titulo: {
+    fontSize: 26,
+    fontWeight: "bold",
+    marginTop: 40,
+    marginLeft: 20,
+    marginBottom: 20,
+    color: "#333"
   },
 
   card: {
-    marginBottom: 20,
-  },
-
-  /* IMAGEM GRANDE (quadrado vermelho do mock) */
-  image: {
-    height: 200,
-    width: "100%",
-    borderRadius: 8,
-    backgroundColor: "#FF6B6B", // fallback caso imagem não carregue
-  },
-
-  /* FAIXA COM TÍTULO */
-  labelContainer: {
-    backgroundColor: "#8B2C2C",
-    alignSelf: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 6,
-    borderRadius: 6,
-    marginTop: -14,
-  },
-
-  labelText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    fontSize: 14,
-  },
-
-  /* DESCRIÇÃO */
-  infoContainer: {
+    width: "48%",
+    height: 140,
     backgroundColor: "#FFF",
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 10,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6
   },
 
-  infoText: {
-    color: "#333",
-    fontSize: 13,
+  iconContainer: {
+    marginBottom: 10
   },
+
+  cardTitulo: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333"
+  }
+
 });
