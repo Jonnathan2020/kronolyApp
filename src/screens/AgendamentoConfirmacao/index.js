@@ -10,7 +10,7 @@ import api from "../../api/api";
 import styles from "./style";
 
 export default function AgendamentoConfirmacao({ navigation, route }) {
-  const { data, hora, horarioId, nome, contatoCliente, servicos = [], produtos = [], obs } =
+  const { data, hora, horarioId, nome, contatoCliente, servicos = [], produtos = [], descricao } =
     route.params;
 
   /* 🔎 LOGS */
@@ -67,7 +67,7 @@ export default function AgendamentoConfirmacao({ navigation, route }) {
         hora: hora,
         nomeCliente: nome,
         contatoCliente,
-        observacoes: obs,
+        descricao: descricao,
         servicos: servicos.map((s) => s.idServico),
         produtos: produtos.map((p) => p.idProduto),
         valorServicos,
@@ -134,10 +134,10 @@ export default function AgendamentoConfirmacao({ navigation, route }) {
         )}
 
         {/* OBS */}
-        {obs && (
+        {descricao && (
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Observações</Text>
-            <Text style={styles.texto}>{obs}</Text>
+            <Text style={styles.texto}>{descricao}</Text>
           </View>
         )}
       </ScrollView>

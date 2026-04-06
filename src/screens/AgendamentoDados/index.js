@@ -21,7 +21,7 @@ export default function AgendamentoDados({ navigation, route }) {
 
   const [nome, setNome] = useState("");
   const [contatoCliente, setContatoCliente] = useState("");
-  const [obs, setObs] = useState("");
+  const [descricao, setDescricao] = useState("");
 
   const [servicos, setServicos] = useState([]);
   const [produtos, setProdutos] = useState([]);
@@ -233,8 +233,8 @@ export default function AgendamentoDados({ navigation, route }) {
       <TextInput
         style={[styles.input, styles.inputMultiline]}
         placeholder="Observações"
-        value={obs}
-        onChangeText={setObs}
+        value={descricao}
+        onChangeText={setDescricao}
         multiline
       />
 
@@ -250,7 +250,7 @@ export default function AgendamentoDados({ navigation, route }) {
             contatoCliente,
             servicos: servicosSelecionados,
             produtos: produtosSelecionados,
-            obs,
+            descricao,
           })
         }
       >
